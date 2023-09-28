@@ -7,7 +7,7 @@ from utils.read import TYPES, type_map, get_max_workers
 from pysbd import Segmenter
 import copy
 
-def search(entry):
+def search(entry, overall_cls):
     # collect text title, which is the 1st sentence in the raw text
     title = entry['text'].split('\n')[0]
     context_wo_title = '\n'.join(entry['text'].split('\n')[1:]) 
@@ -85,7 +85,8 @@ if __name__ == "__main__":
     segmenter = Segmenter(language='en',clean=False)
 
     print('transferring raw texts into reading comprehension...')
-    read_compre =list(process_map(search, raw_texts, max_workers=max_workers, chunksize=8192))
+    #read_compre =list(process_map(search, raw_texts, max_workers=max_workers, chunksize=8192))
+    read_compre = list(process_map(lambda entry: search(entry, overall_cls), raw_texts, max_workers=max_workers, chunksize=8192))
 
     print('saving reading comprehension texts...')
     # sort by text_id to align with the order of raw texts
